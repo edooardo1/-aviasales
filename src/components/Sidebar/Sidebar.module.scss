@@ -1,0 +1,16 @@
+.sidebar {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+
+  input {
+    margin-right: 10px;
+  }
+}
