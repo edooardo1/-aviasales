@@ -1,25 +1,70 @@
-.sidebar {
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+.sidebarContainer {
   background-color: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  z-index: 999;
+}
+
+.sidebarContent {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
-.label {
+.filterGroup {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.checkbox {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
+@media (min-width: 768px) {
+  .sidebarContainer {
+    position: static;
+    width: 250px;
+  }
 
-  input {
-    margin-right: 10px;
+  .modalBackdrop {
+    display: none;
+  }
+
+  .closeButton {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .sidebarContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 90%;
+    height: 100%;
+    background-color: white;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .open {
+    transform: translateX(0);
+  }
+
+  .modalBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 998;
+  }
+
+  .closeButton {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
   }
 }

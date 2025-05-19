@@ -1,4 +1,7 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import { setSort } from "../../Store/sortSlice";
 
 import styles from "./SortTabs.module.scss";
 
@@ -9,13 +12,17 @@ const tabs = [
 ];
 
 function SortTabs() {
+  const activeSort = useSelector((state) => state.sort);
+  const dispatch = useDispatch();
+
   return (
     <div className={styles.tabs}>
       {tabs.map((tab) => (
         <button
           key={tab.id}
           type="button"
-          className={`${styles.tab} ${tab.id === "cheap" ? styles.active : ""}`}
+          onClick={() => dispatch(setSort(tab.id))}
+          className={`${styles.tab} ${tab.id === activeSort ? styles.active : ""}`}
         >
           {tab.label}
         </button>

@@ -1,66 +1,20 @@
-.ticketListWrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  padding: 20px;
-}
-
 .ticketList {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  flex: 1;
+  gap: 16px;
 }
 
-.toggleSidebar {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  z-index: 1100;
-  padding: 10px 16px;
-  background-color: #2196f3;
+.showMoreBtn {
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #2196f3;
   color: white;
   border: none;
   border-radius: 6px;
-  font-weight: bold;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.modalSidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modalContent {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  position: relative;
-  width: 80%;
-  max-width: 300px;
-}
-
-.closeSidebar {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 24px;
-  border: none;
-  background: none;
   cursor: pointer;
-}
 
-.showMore {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
+  &:hover {
+    background: #1976d2;
+  }
 }

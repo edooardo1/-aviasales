@@ -1,44 +1,61 @@
 import React from "react";
 
-import logo from "../../assets/airlane.png";
-
 import styles from "./Ticket.module.scss";
 
-function Ticket() {
+function Ticket({ price, carrier, segments }) {
+  const getStopsLabel = (count) => {
+    if (count === 0) return "Без пересадок";
+    if (count === 1) return "1 пересадка";
+    if (count < 5) return `${count} пересадки`;
+    return `${count} пересадок`;
+  };
+
+  function formatTime(dateStr, durationMinutes) {
+    const departure = new Date(dateStr);
+    const arrival = new Date(departure.getTime() + durationMinutes * 60000);
+
+    const format = (d) => d.toTimeString().slice(0, 5);
+    return `${format(departure)} – ${format(arrival)}`;
+  }
+
   return (
     <div className={styles.ticket}>
       <div className={styles.header}>
-        <div className={styles.price}>13 400 ₽</div>
-        <img src={logo} alt="Airline logo" className={styles.logo} />
+        <div className={styles.price}>{price} ₽</div>
+        <img
+          src={`https://pics.avs.io/99/36/${carrier}.png`}
+          alt="Airline logo"
+          className={styles.logo}
+        />
       </div>
-      <div className={styles.segments}>
-        <div className={styles.segment}>
-          <div className={styles.label}>MOW – HKT</div>
-          <div className={styles.value}>10:45 – 08:00</div>
+
+      {segments.map((segment) => (
+        <div
+          className={styles.segments}
+          key={`${segment.origin}-${segment.destination}`}
+        >
+          <div className={styles.segment}>
+            <div className={styles.label}>
+              {segment.origin} – {segment.destination}
+            </div>
+            <div className={styles.value}>
+              {formatTime(segment.date, segment.duration)}
+            </div>
+          </div>
+          <div className={styles.segment}>
+            <div className={styles.label}>В пути</div>
+            <div className={styles.value}>
+              {Math.floor(segment.duration / 60)}ч {segment.duration % 60}м
+            </div>
+          </div>
+          <div className={styles.segment}>
+            <div className={styles.label}>
+              {getStopsLabel(segment.stops.length)}
+            </div>
+            <div className={styles.value}>{segment.stops.join(", ")}</div>
+          </div>
         </div>
-        <div className={styles.segment}>
-          <div className={styles.label}>В ПУТИ</div>
-          <div className={styles.value}>21ч 15м</div>
-        </div>
-        <div className={styles.segment}>
-          <div className={styles.label}>2 ПЕРЕСАДКИ</div>
-          <div className={styles.value}>HKG, JNB</div>
-        </div>
-      </div>
-      <div className={styles.segments}>
-        <div className={styles.segment}>
-          <div className={styles.label}>HKT – MOW</div>
-          <div className={styles.value}>11:20 – 23:50</div>
-        </div>
-        <div className={styles.segment}>
-          <div className={styles.label}>В ПУТИ</div>
-          <div className={styles.value}>12ч 30м</div>
-        </div>
-        <div className={styles.segment}>
-          <div className={styles.label}>1 ПЕРЕСАДКА</div>
-          <div className={styles.value}>DXB</div>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }

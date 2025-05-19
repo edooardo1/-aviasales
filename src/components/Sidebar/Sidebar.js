@@ -1,87 +1,79 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import classNames from "classnames";
 
 import { toggleFilter } from "../../Store/filtersSlice";
 
 import styles from "./Sidebar.module.scss";
 
-function Sidebar() {
+const filterLabels = [
+  { id: "all", label: "Все" },
+  { id: "noTransfers", label: "Без пересадок" },
+  { id: "oneTransfer", label: "1 пересадка" },
+  { id: "twoTransfers", label: "2 пересадки" },
+  { id: "threeTransfers", label: "3 пересадки" },
+];
+
+export default function Sidebar({ isOpen, onClose }) {
   const filters = useSelector((state) => state.filters);
   const dispatch = useDispatch();
 
-  const handleChange = (filterName) => {
-    dispatch(toggleFilter(filterName));
+  useEffect(() => {
+    function handleEsc(event) {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleEsc);
+    }
+
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [isOpen, onClose]);
+
+  const handleChange = (filterId) => {
+    dispatch(toggleFilter(filterId));
   };
 
+  const sidebarClass = classNames(styles.sidebarContainer, {
+    [styles.open]: isOpen,
+  });
+
   return (
-    <div className={styles.sidebar}>
-      <p className={styles.title}>Количество пересадок</p>
-      <div className={styles.checkbox}>
-        <label htmlFor="all">
-          <input
-            id="all"
-            type="checkbox"
-            name="all"
-            checked={filters.all}
-            onChange={handleChange}
-          />
-          Все
-        </label>
+    <>
+      <div className={sidebarClass}>
+        <button
+          type="button"
+          className={styles.closeButton}
+          onClick={onClose}
+          aria-label="Закрыть фильтры"
+        >
+          ✕
+        </button>
+
+        <div className={styles.sidebarContent}>
+          {filterLabels.map(({ id, label }) => (
+            <div key={id} className={styles.filterGroup}>
+              <input
+                type="checkbox"
+                id={id}
+                checked={filters[id]}
+                onChange={() => handleChange(id)}
+              />
+              <label htmlFor={id}>{label}</label>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className={styles.checkbox}>
-        <label htmlFor="noTransfers">
-          <input
-            id="noTransfers"
-            type="checkbox"
-            name="noTransfers"
-            checked={filters.noTransfers}
-            onChange={handleChange}
-          />
-          Без пересадок
-        </label>
-      </div>
-
-      <div className={styles.checkbox}>
-        <label htmlFor="oneTransfer">
-          <input
-            id="oneTransfer"
-            type="checkbox"
-            name="oneTransfer"
-            checked={filters.oneTransfer}
-            onChange={handleChange}
-          />
-          1 пересадка
-        </label>
-      </div>
-
-      <div className={styles.checkbox}>
-        <label htmlFor="twoTransfers">
-          <input
-            id="twoTransfers"
-            type="checkbox"
-            name="twoTransfers"
-            checked={filters.twoTransfers}
-            onChange={handleChange}
-          />
-          2 пересадки
-        </label>
-      </div>
-
-      <div className={styles.checkbox}>
-        <label htmlFor="threeTransfers">
-          <input
-            id="threeTransfers"
-            type="checkbox"
-            name="threeTransfers"
-            checked={filters.threeTransfers}
-            onChange={handleChange}
-          />
-          3 пересадки
-        </label>
-      </div>
-    </div>
+      {isOpen && (
+        <div
+          className={styles.modalBackdrop}
+          onClick={onClose}
+          role="presentation"
+        />
+      )}
+    </>
   );
 }
-
-export default Sidebar;

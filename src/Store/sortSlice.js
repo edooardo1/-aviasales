@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = "cheap"; // cheap | fast | optimal
+const initialState = "cheap";
 
 const sortSlice = createSlice({
   name: "sort",
