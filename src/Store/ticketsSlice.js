@@ -10,47 +10,58 @@ const initialState = {
 const ticketsSlice = createSlice({
   name: "tickets",
   initialState,
+
+  /* eslint-disable no-param-reassign */
   reducers: {
     fetchTicketsStart(state) {
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
+      state.loading = true;
+      state.error = null;
     },
     fetchTicketsSuccess(state, action) {
-      return {
-        ...state,
-        loading: false,
-        tickets: action.payload,
-      };
+      state.loading = false;
+      state.tickets = action.payload;
     },
     fetchTicketsFailure(state, action) {
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
+      state.loading = false;
+      state.error = action.payload;
     },
   },
+  /* eslint-enable no-param-reassign */
 });
 
 export const { fetchTicketsStart, fetchTicketsSuccess, fetchTicketsFailure } =
   ticketsSlice.actions;
 
 export const fetchTickets = () => async (dispatch) => {
-  try {
-    dispatch(fetchTicketsStart());
+  dispatch(fetchTicketsStart());
 
-    const searchRes = await axios.get(
+  try {
+    const { data } = await axios.get(
       "https://aviasales-test-api.kata.academy/search",
     );
-    const { searchId } = searchRes.data;
+    const { searchId } = data;
 
-    const ticketsRes = await axios.get(
-      `https://aviasales-test-api.kata.academy/tickets?searchId=${searchId}`,
-    );
-    dispatch(fetchTicketsSuccess(ticketsRes.data.tickets));
+    let stop = false;
+    let allTickets = [];
+
+    /* eslint-disable no-await-in-loop */
+    while (!stop) {
+      try {
+        const res = await axios.get(
+          `https://aviasales-test-api.kata.academy/tickets?searchId=${searchId}`,
+        );
+        allTickets = [...allTickets, ...res.data.tickets];
+        stop = res.data.stop;
+      } catch (err) {
+        if (err.response?.status !== 500) {
+          dispatch(fetchTicketsFailure(err.message));
+          return;
+        }
+      }
+    }
+    /* eslint-enable no-await-in-loop */
+
+    dispatch(fetchTicketsSuccess(allTickets));
   } catch (error) {
     dispatch(fetchTicketsFailure(error.message));
   }
